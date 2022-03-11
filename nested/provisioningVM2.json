@@ -327,7 +327,7 @@
               "createOption": "Empty",
               "diskSizeGB": 1000,
               "lun": 2
-            }
+            },
             {
               "name": "[concat(parameters('sqlVMName'), copyindex(),'-data-disk4')]",
               "caching": "None",
