@@ -83,9 +83,9 @@
     "domainName": {
       "type": "string"
     },
-    "witnessVMSize": {
-      "type": "string"
-    },
+    //"witnessVMSize": {
+    //  "type": "string"
+    //},
     "sqlwVMName": {
       "type": "string"
     },
@@ -113,7 +113,7 @@
     {
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[parameters('sqlAvailabilitySetName')]",
-      "apiVersion":"2020-12-01",
+      "apiVersion": "2020-12-01",
       "location": "[parameters('location')]",
       "sku": {
         "name": "Aligned"
@@ -151,12 +151,12 @@
             "version": "latest"
           },
           "osDisk": {
-            "name": "[concat(parameters('adPDCVMName'),'_OSDisk')]", 
+            "name": "[concat(parameters('adPDCVMName'),'_OSDisk')]",
             "caching": "ReadWrite",
             "createOption": "FromImage"
           },
           "dataDisks": [
-            { 
+            {
               "name": "[concat(parameters('adPDCVMName'),'-data-disk1')]",
               "createOption": "Empty",
               "caching": "None",
@@ -174,14 +174,14 @@
         },
         "diagnosticsProfile": {
           "bootDiagnostics": {
-            "enabled":  true ,
-            "storageUri": "[concat('http://',variables('diagstorageName'),'.blob.', environment().suffixes.storage)]"
+            "enabled": true,
+            "storageUri": "[concat('http://',variables('diagstorageName'), '.blob.', environment().suffixes.storage)]"
           }
         }
       },
       "resources": [
         {
-          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "type": "extensions",
           "name": "[concat(parameters('adPDCVMName'),'/InstallDomainController')]",
           "apiVersion": "2020-12-01",
           "location": "[parameters('location')]",
@@ -241,12 +241,12 @@
             "version": "latest"
           },
           "osDisk": {
-            "name": "[concat(parameters('adBDCVMName'),'_OSDisk')]", 
+            "name": "[concat(parameters('adBDCVMName'),'_OSDisk')]",
             "caching": "ReadWrite",
             "createOption": "FromImage"
           },
           "dataDisks": [
-            { 
+            {
               "name": "[concat(parameters('adBDCVMName'),'-data-disk1')]",
               "createOption": "Empty",
               "caching": "None",
@@ -298,12 +298,12 @@
             "version": "latest"
           },
           "osDisk": {
-            "name":"[concat(parameters('sqlwVMName'),'_OSDisk')]",
+            "name": "osdisk",
             "caching": "ReadWrite",
             "createOption": "FromImage"
           },
           "dataDisks": [
-            { 
+            {
               "name": "[concat(parameters('sqlwVMName'),'-data-disk1')]",
               "caching": "None",
               "createOption": "Empty",
@@ -370,27 +370,6 @@
               "createOption": "Empty",
               "diskSizeGB": 1000,
               "lun": 0
-            },
-            { 
-              "name": "[concat(parameters('sqlVMName'), copyindex(),'-data-disk2')]",
-              "caching": "None",
-              "createOption": "Empty",
-              "diskSizeGB": 1000,
-              "lun": 1
-            },
-            { 
-              "name": "[concat(parameters('sqlVMName'), copyindex(),'-data-disk3')]",
-              "caching": "None",
-              "createOption": "Empty",
-              "diskSizeGB": 1000,
-              "lun": 2
-            },
-            { 
-              "name": "[concat(parameters('sqlVMName'), copyindex(),'-data-disk4')]",
-              "caching": "None",
-              "createOption": "Empty",
-              "diskSizeGB": 1000,
-              "lun": 3
             }
           ]
         },
@@ -403,7 +382,7 @@
         },
         "diagnosticsProfile": {
           "bootDiagnostics": {
-            "enabled":  true ,
+            "enabled": true,
             "storageUri": "[concat('http://',variables('diagstorageName'),'.blob.', environment().suffixes.storage)]"
           }
         }
