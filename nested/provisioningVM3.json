@@ -83,6 +83,9 @@
     "domainName": {
       "type": "string"
     },
+    "witnessVMSize": {
+      "type": "string"
+    },
     "sqlwVMName": {
       "type": "string"
     },
@@ -110,7 +113,7 @@
     {
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[parameters('sqlAvailabilitySetName')]",
-      "apiVersion":"2020-12-01",
+      "apiVersion": "2020-12-01",
       "location": "[parameters('location')]",
       "sku": {
         "name": "Aligned"
@@ -148,12 +151,12 @@
             "version": "latest"
           },
           "osDisk": {
-            "name": "[concat(parameters('adPDCVMName'),'_OSDisk')]", 
+            "name":  "[concat(parameters('adPDCVMName'),'_OSDisk')]",
             "caching": "ReadWrite",
             "createOption": "FromImage"
           },
           "dataDisks": [
-            { 
+            {
               "name": "[concat(parameters('adPDCVMName'),'-data-disk1')]",
               "createOption": "Empty",
               "caching": "None",
@@ -171,14 +174,14 @@
         },
         "diagnosticsProfile": {
           "bootDiagnostics": {
-            "enabled":  true ,
+            "enabled": true,
             "storageUri": "[concat('http://',variables('diagstorageName'),'.blob.', environment().suffixes.storage)]"
           }
         }
       },
       "resources": [
         {
-          "type": "extensions",
+          "type": "Microsoft.Compute/virtualMachines/extensions",
           "name": "[concat(parameters('adPDCVMName'),'/InstallDomainController')]",
           "apiVersion": "2020-12-01",
           "location": "[parameters('location')]",
@@ -238,12 +241,12 @@
             "version": "latest"
           },
           "osDisk": {
-            "name": "[concat(parameters('adBDCVMName'),'_OSDisk')]", 
+            "name": "osdisk",
             "caching": "ReadWrite",
             "createOption": "FromImage"
           },
           "dataDisks": [
-            { 
+            {
               "name": "[concat(parameters('adBDCVMName'),'-data-disk1')]",
               "createOption": "Empty",
               "caching": "None",
@@ -256,6 +259,96 @@
           "networkInterfaces": [
             {
               "id": "[resourceId('Microsoft.Network/networkInterfaces',parameters('adBDCNicName'))]"
+            }
+          ]
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": true,
+            "storageUri": "[concat('http://',variables('diagstorageName'),'.blob.', environment().suffixes.storage)]"
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "2020-12-01",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[concat(parameters('sqlVMName'), copyindex())]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/availabilitySets/',parameters('sqlAvailabilitySetName'))]"
+      ],
+      "copy": {
+        "name": "sqlvirtualMachineLoop",
+        "count": 2
+      },
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('sqlVMSize')]"
+        },
+        "availabilitySet": {
+          "id": "[resourceId('Microsoft.Compute/availabilitySets',parameters('sqlAvailabilitySetName'))]"
+        },
+        "osProfile": {
+          "computerName": "[concat(parameters('sqlVMName'), copyindex())]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[parameters('sqlImagePublisher')]",
+            "offer": "[parameters('sqlImageOffer')]",
+            "sku": "[parameters('sqlImageSKU')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "[concat(parameters('sqlVMName'), copyindex(),'_OSDisk')]",
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          },
+          "dataDisks": [
+            {
+              "name": "[concat(parameters('sqlVMName'), copyindex(),'-data-disk1')]",
+              "caching": "None",
+              "createOption": "Empty",
+              "diskSizeGB": 1000,
+              "lun": 0
+            },
+            {
+              "name": "[concat(parameters('sqlVMName'), copyindex(),'-data-disk2')]",
+              "caching": "None",
+              "createOption": "Empty",
+              "diskSizeGB": 1000,
+              "lun": 1
+            },
+            {
+              "name": "[concat(parameters('sqlVMName'), copyindex(),'-data-disk3')]",
+              "caching": "None",
+              "createOption": "Empty",
+              "diskSizeGB": 1000,
+              "lun": 2
+            }
+            {
+              "name": "[concat(parameters('sqlVMName'), copyindex(),'-data-disk4')]",
+              "caching": "None",
+              "createOption": "Empty",
+              "diskSizeGB": 1000,
+              "lun": 3
+            },
+            {
+              "name": "[concat(parameters('sqlVMName'), copyindex(),'-data-disk5')]",
+              "caching": "None",
+              "createOption": "Empty",
+              "diskSizeGB": 1000,
+              "lun": 4
+            }
+
+          ]
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(parameters('sqlVMName'), copyindex(),'-nic'))]"
             }
           ]
         },
@@ -295,7 +388,7 @@
             "version": "latest"
           },
           "osDisk": {
-            "name":"[concat(parameters('sqlwVMName'),'_OSDisk')]",
+            "name": "[concat(parameters('sqlwVMName'),'_OSDisk1')]",
             "caching": "ReadWrite",
             "createOption": "FromImage"
           },
@@ -318,96 +411,7 @@
         },
         "diagnosticsProfile": {
           "bootDiagnostics": {
-            "enabled":  true ,
-            "storageUri": "[concat('http://',variables('diagstorageName'),'.blob.', environment().suffixes.storage)]"
-          }
-        }
-      }
-    },
-    {
-      "apiVersion": "2020-12-01",
-      "type": "Microsoft.Compute/virtualMachines",
-      "name": "[concat(parameters('sqlVMName'), copyindex())]",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Compute/availabilitySets/',parameters('sqlAvailabilitySetName'))]"
-      ],
-      "copy": {
-        "name": "sqlvirtualMachineLoop",
-        "count": 3
-      },
-      "properties": {
-        "hardwareProfile": {
-          "vmSize": "[parameters('sqlVMSize')]"
-        },
-        "availabilitySet": {
-          "id": "[resourceId('Microsoft.Compute/availabilitySets',parameters('sqlAvailabilitySetName'))]"
-        },
-        "osProfile": {
-          "computerName": "[concat(parameters('sqlVMName'), copyindex())]",
-          "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPassword')]"
-        },
-        "storageProfile": {
-          "imageReference": {
-            "publisher": "[parameters('sqlImagePublisher')]",
-            "offer": "[parameters('sqlImageOffer')]",
-            "sku": "[parameters('sqlImageSKU')]",
-            "version": "latest"
-          },
-          "osDisk": {
-            "name": "[concat(parameters('sqlVMName'), copyindex(),'_OSDisk')]",
-            "caching": "ReadWrite",
-            "createOption": "FromImage"
-          },
-          "dataDisks": [
-            { 
-              "name": "[concat(parameters('sqlVMName'), copyindex(),'-data-disk1')]",
-              "caching": "None",
-              "createOption": "Empty",
-              "diskSizeGB": 1000,
-              "lun": 0
-            },
-            { 
-              "name": "[concat(parameters('sqlVMName'), copyindex(),'-data-disk2')]",
-              "caching": "None",
-              "createOption": "Empty",
-              "diskSizeGB": 1000,
-              "lun": 1
-            },
-            { 
-              "name": "[concat(parameters('sqlVMName'), copyindex(),'-data-disk3')]",
-              "caching": "None",
-              "createOption": "Empty",
-              "diskSizeGB": 1000,
-              "lun": 2
-            },
-            { 
-              "name": "[concat(parameters('sqlVMName'), copyindex(),'-data-disk4')]",
-              "caching": "None",
-              "createOption": "Empty",
-              "diskSizeGB": 1000,
-              "lun": 3
-            },
-            { 
-              "name": "[concat(parameters('sqlVMName'), copyindex(),'-data-disk5')]",
-              "caching": "None",
-              "createOption": "Empty",
-              "diskSizeGB": 1000,
-              "lun": 4
-            }
-          ]
-        },
-        "networkProfile": {
-          "networkInterfaces": [
-            {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(parameters('sqlVMName'), copyindex(),'-nic'))]"
-            }
-          ]
-        },
-        "diagnosticsProfile": {
-          "bootDiagnostics": {
-            "enabled":  true ,
+            "enabled": true,
             "storageUri": "[concat('http://',variables('diagstorageName'),'.blob.', environment().suffixes.storage)]"
           }
         }
