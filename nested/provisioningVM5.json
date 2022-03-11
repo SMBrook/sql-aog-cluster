@@ -83,9 +83,6 @@
     "domainName": {
       "type": "string"
     },
-    "witnessVMSize": {
-      "type": "string"
-    },
     "sqlwVMName": {
       "type": "string"
     },
