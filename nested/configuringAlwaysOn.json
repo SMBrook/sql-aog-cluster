@@ -56,9 +56,6 @@
     "adPDCVMName": {
       "type": "string"
     },
-    "sqlwVMName": {
-      "type": "string"
-    },
     "numberOfDisks": {
       "type": "string"
     },
@@ -83,7 +80,6 @@
           "properties": {
             "domainName": "[parameters('domainName')]",
             "clusterName": "[parameters('clusterName')]",
-            "sharePath": "[concat('\\\\',parameters('sqlwVMName'),'\\',parameters('sharePath'))]",
             "nodes": [
               "[concat(parameters('sqlVMName'),'0')]",
               "[concat(parameters('sqlVMName'),'1')]"

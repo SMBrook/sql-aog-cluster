@@ -38,9 +38,6 @@
     "adPDCVMName": {
       "type": "string"
     },
-    "sqlwVMName": {
-      "type": "string"
-    },
     "fswModulesURL": {
       "type": "string"
     },
@@ -148,7 +145,6 @@
       "apiVersion": "2021-07-01",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Compute/virtualMachines/extensions',parameters('sqlwVMName'),'CreateFileShareWitness')]",
         "[resourceId('Microsoft.Compute/virtualMachines/extensions', concat(parameters('sqlVMName'),'0'), 'SqlVmIaasExtension')]"
       ],
       "properties": {
