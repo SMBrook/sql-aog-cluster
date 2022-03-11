@@ -82,12 +82,6 @@
     },
     "domainName": {
       "type": "string"
-    },
-    "sqlwVMName": {
-      "type": "string"
-    },
-    "sqlwNicName": {
-      "type": "string"
     }
   },
   "variables": { 
@@ -351,63 +345,6 @@
         "diagnosticsProfile": {
           "bootDiagnostics": {
             "enabled":  true ,
-            "storageUri": "[concat('http://',variables('diagstorageName'),'.blob.', environment().suffixes.storage)]"
-          }
-        }
-      }
-    },
-    {
-      "apiVersion": "2020-12-01",
-      "type": "Microsoft.Compute/virtualMachines",
-      "name": "[parameters('sqlwVMName')]",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Compute/availabilitySets/',parameters('sqlAvailabilitySetName'))]"
-      ],
-      "properties": {
-        "hardwareProfile": {
-          "vmSize": "[parameters('witnessVMSize')]"
-        },
-        "availabilitySet": {
-          "id": "[resourceId('Microsoft.Compute/availabilitySets',parameters('sqlAvailabilitySetName'))]"
-        },
-        "osProfile": {
-          "computerName": "[parameters('sqlwVMName')]",
-          "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPassword')]"
-        },
-        "storageProfile": {
-          "imageReference": {
-            "publisher": "[parameters('fswImagePublisher')]",
-            "offer": "[parameters('fswImageOffer')]",
-            "sku": "[parameters('fswImageSKU')]",
-            "version": "latest"
-          },
-          "osDisk": {
-            "name": "[concat(parameters('sqlwVMName'),'_OSDisk1')]",
-            "caching": "ReadWrite",
-            "createOption": "FromImage"
-          },
-          "dataDisks": [
-            { 
-              "name": "[concat(parameters('sqlwVMName'),'-data-disk1')]",
-              "caching": "None",
-              "createOption": "Empty",
-              "diskSizeGB": 128,
-              "lun": 0
-            }
-          ]
-        },
-        "networkProfile": {
-          "networkInterfaces": [
-            {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',parameters('sqlwNicName'))]"
-            }
-          ]
-        },
-        "diagnosticsProfile": {
-          "bootDiagnostics": {
-            "enabled": true,
             "storageUri": "[concat('http://',variables('diagstorageName'),'.blob.', environment().suffixes.storage)]"
           }
         }
