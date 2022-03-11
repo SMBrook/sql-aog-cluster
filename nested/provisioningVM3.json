@@ -327,22 +327,7 @@
               "createOption": "Empty",
               "diskSizeGB": 1000,
               "lun": 2
-            },
-            {
-              "name": "[concat(parameters('sqlVMName'), copyindex(),'-data-disk4')]",
-              "caching": "None",
-              "createOption": "Empty",
-              "diskSizeGB": 1000,
-              "lun": 3
-            },
-            {
-              "name": "[concat(parameters('sqlVMName'), copyindex(),'-data-disk5')]",
-              "caching": "None",
-              "createOption": "Empty",
-              "diskSizeGB": 1000,
-              "lun": 4
             }
-
           ]
         },
         "networkProfile": {

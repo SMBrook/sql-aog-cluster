@@ -342,7 +342,6 @@
               "diskSizeGB": 1000,
               "lun": 4
             }
-
           ]
         },
         "networkProfile": {
