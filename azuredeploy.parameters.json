@@ -6,13 +6,13 @@
          "value":"alwaysonadmin"
       },
       "adminPassword":{  
-         "value":"GEN-PASSWORD"
+         "value":"GEN-PASSWORDw1"
       },
       "sqlServerServiceAccountUserName":{  
          "value":"sqlservice"
       },
       "sqlServerServiceAccountPassword":{  
-         "value":"GEN-PASSWORD"
+         "value":"GEN-PASSWORDw2"
       },
       "sqlStorageAccountType":{  
          "value":"Premium_LRS"
@@ -21,10 +21,10 @@
          "value":"Standard_LRS"
       },
       "sqlStorageAccountName":{  
-         "value":"GEN-UNIQUE"
+         "value":"smbsqlsa671"
       },
       "dcStorageAccountName":{  
-         "value":"GEN-UNIQUE"
+         "value":"smbsa781s"
       },
       "adVMSize":{  
          "value": "Standard_D2s_v3"
